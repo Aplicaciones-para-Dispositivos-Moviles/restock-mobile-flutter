@@ -21,12 +21,6 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Restock Registration'),
-        centerTitle: true,
-        backgroundColor: primaryGreen,
-        foregroundColor: Colors.white,
-      ),
       body: BlocListener<RegisterBloc, RegisterState>(
         listener: (context, state) {
           if (state.status == Status.success) {
@@ -64,7 +58,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           .add(OnUsernameChanged(username: v)),
                       decoration: const InputDecoration(
                         border: OutlineInputBorder(),
-                        labelText: 'Usuario',
+                        labelText: 'Username',
                         prefixIcon: Icon(Icons.person_outline),
                       ),
                     ),
@@ -101,14 +95,14 @@ class _RegisterPageState extends State<RegisterPage> {
                         onPressed: () => context
                             .read<RegisterBloc>()
                             .add(const RegisterSubmitted()),
-                        child: const Text('Crear cuenta'),
+                        child: const Text('Create Account'),
                       ),
                     ),
                     const SizedBox(height: 12),
 
                     TextButton(
                       onPressed: () => Navigator.pop(context),
-                      child: const Text('¿Ya tienes cuenta? Iniciar sesión'),
+                      child: const Text('Already have an account? Log in'),
                     ),
                   ],
                 ),

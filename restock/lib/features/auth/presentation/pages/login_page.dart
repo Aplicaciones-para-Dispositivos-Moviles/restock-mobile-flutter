@@ -82,7 +82,7 @@ class _LoginPageState extends State<LoginPage> {
                           context.read<LoginBloc>().add(OnEmailChanged(email: value)),
                       decoration: const InputDecoration(
                         border: OutlineInputBorder(),
-                        labelText: 'Email',
+                        labelText: 'Username',
                         prefixIcon: Icon(Icons.email_outlined),
                       ),
                       keyboardType: TextInputType.emailAddress,

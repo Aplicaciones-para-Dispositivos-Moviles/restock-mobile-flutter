@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:restock/features/auth/presentation/blocs/login_bloc.dart';
 import 'package:restock/features/auth/presentation/blocs/register_bloc.dart';
 import 'package:restock/features/auth/presentation/pages/login_page.dart';
+import 'package:restock/features/home/presentation/pages/home_page.dart';
 
 void main() {
   final authService = AuthService();
@@ -26,7 +27,13 @@ class RestockApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+
       home: const LoginPage(),
+
+      routes: {
+        '/login': (_) => const LoginPage(),
+        '/home': (_) => const HomePage(),
+      },
     );
   }
 }
