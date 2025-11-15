@@ -42,17 +42,7 @@ class HomePage extends StatelessWidget {
               title: const Text("Orders"),
               onTap: () => _goTo(context, "Orders"),
             ),
-            ListTile(
-              leading: const Icon(Icons.restaurant),
-              title: const Text("Recipes"),
-              onTap: () => _goTo(context, "Recipes"),
-            ),
-            ListTile(
-              leading: const Icon(Icons.point_of_sale),
-              title: const Text("Sales"),
-              onTap: () => _goTo(context, "Sales"),
-            ),
-
+            
             const Spacer(),
 
             // ------------------- LOGOUT ABAJO -------------------
@@ -134,28 +124,6 @@ class HomePage extends StatelessWidget {
             ),
 
             const SizedBox(height: 16),
-
-            Row(
-              children: [
-                Expanded(
-                  child: QuickActionCard(
-                    icon: Icons.restaurant,
-                    title: "Recipes",
-                    subtitle: "Manage recipes",
-                    onTap: () => _goTo(context, "Recipes"),
-                  ),
-                ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: QuickActionCard(
-                    icon: Icons.point_of_sale,
-                    title: "Sales",
-                    subtitle: "Register sales",
-                    onTap: () => _goTo(context, "Sales"),
-                  ),
-                ),
-              ],
-            ),
 
             const SizedBox(height: 32),
 
