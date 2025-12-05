@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:restock/core/enums/status.dart';
+import 'package:restock/features/auth/data/local/auth_storage.dart';
 import 'package:restock/features/auth/presentation/blocs/register_bloc.dart';
 import 'package:restock/features/auth/presentation/blocs/register_event.dart';
 import 'package:restock/features/auth/presentation/blocs/register_state.dart';
-import 'package:restock/features/home/presentation/pages/home_page.dart';
+import 'package:restock/features/profiles/data/remote/business_update_service.dart';
+import 'package:restock/features/profiles/data/remote/profile_update_service.dart';
+import 'package:restock/features/profiles/presentation/blocs/initial_config_bloc.dart';
+import 'package:restock/features/profiles/presentation/pages/initial_profile_configuration_screen.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -24,9 +28,19 @@ class _RegisterPageState extends State<RegisterPage> {
       body: BlocListener<RegisterBloc, RegisterState>(
         listener: (context, state) {
           if (state.status == Status.success) {
+            // Navigate to initial profile configuration
             Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (context) => const HomePage()),
+              MaterialPageRoute(
+                builder: (context) => BlocProvider(
+                  create: (context) => InitialConfigBloc(
+                    profileService: ProfileUpdateService(),
+                    businessService: BusinessUpdateService(),
+                    storage: AuthStorage(),
+                  ),
+                  child: const InitialProfileConfigurationScreen(),
+                ),
+              ),
             );
           } else if (state.status == Status.failure) {
             ScaffoldMessenger.of(context).showSnackBar(
@@ -51,6 +65,112 @@ class _RegisterPageState extends State<RegisterPage> {
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 24),
+
+                    // Role Selection
+                    BlocBuilder<RegisterBloc, RegisterState>(
+                      builder: (context, state) {
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'I am a...',
+                              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                            ),
+                            const SizedBox(height: 12),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: OutlinedButton(
+                                    onPressed: () => context
+                                        .read<RegisterBloc>()
+                                        .add(const OnRoleChanged(roleId: 1)),
+                                    style: OutlinedButton.styleFrom(
+                                      padding: const EdgeInsets.symmetric(vertical: 16),
+                                      side: BorderSide(
+                                        color: state.roleId == 1
+                                            ? primaryGreen
+                                            : Colors.grey,
+                                        width: state.roleId == 1 ? 2 : 1,
+                                      ),
+                                      backgroundColor: state.roleId == 1
+                                          ? primaryGreen.withValues(alpha: 0.1)
+                                          : null,
+                                    ),
+                                    child: Column(
+                                      children: [
+                                        Icon(
+                                          Icons.factory,
+                                          color: state.roleId == 1
+                                              ? primaryGreen
+                                              : Colors.grey,
+                                        ),
+                                        const SizedBox(height: 4),
+                                        Text(
+                                          'Provider',
+                                          style: TextStyle(
+                                            color: state.roleId == 1
+                                                ? primaryGreen
+                                                : Colors.grey,
+                                            fontWeight: state.roleId == 1
+                                                ? FontWeight.bold
+                                                : FontWeight.normal,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: OutlinedButton(
+                                    onPressed: () => context
+                                        .read<RegisterBloc>()
+                                        .add(const OnRoleChanged(roleId: 2)),
+                                    style: OutlinedButton.styleFrom(
+                                      padding: const EdgeInsets.symmetric(vertical: 16),
+                                      side: BorderSide(
+                                        color: state.roleId == 2
+                                            ? primaryGreen
+                                            : Colors.grey,
+                                        width: state.roleId == 2 ? 2 : 1,
+                                      ),
+                                      backgroundColor: state.roleId == 2
+                                          ? primaryGreen.withValues(alpha: 0.1)
+                                          : null,
+                                    ),
+                                    child: Column(
+                                      children: [
+                                        Icon(
+                                          Icons.store,
+                                          color: state.roleId == 2
+                                              ? primaryGreen
+                                              : Colors.grey,
+                                        ),
+                                        const SizedBox(height: 4),
+                                        Text(
+                                          'Supplier',
+                                          style: TextStyle(
+                                            color: state.roleId == 2
+                                                ? primaryGreen
+                                                : Colors.grey,
+                                            fontWeight: state.roleId == 2
+                                                ? FontWeight.bold
+                                                : FontWeight.normal,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        );
+                      },
+                    ),
+                    const SizedBox(height: 20),
 
                     TextField(
                       onChanged: (v) => context
