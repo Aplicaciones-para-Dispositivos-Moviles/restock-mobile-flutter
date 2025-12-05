@@ -10,6 +10,7 @@ import 'package:restock/features/profiles/data/remote/profile_update_service.dar
 import 'package:restock/features/profiles/presentation/blocs/initial_config_bloc.dart';
 import 'package:restock/features/profiles/presentation/pages/initial_profile_configuration_screen.dart';
 
+
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
 
@@ -42,6 +43,16 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
               ),
             );
+
+            // Verificar suscripción: 0 = sin suscripción, 1 = anual, 2 = semestral
+            if (state.userSubscription == 0) {
+              // Sin suscripción, ir a página de planes
+              Navigator.pushReplacementNamed(context, '/subscriptions');
+            } else {
+              // Con suscripción, ir a home
+              Navigator.pushReplacementNamed(context, '/home');
+            }
+
           } else if (state.status == Status.failure) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text(state.message ?? 'Error desconocido')),

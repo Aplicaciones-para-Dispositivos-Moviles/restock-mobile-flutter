@@ -2,7 +2,6 @@ import 'package:restock/core/enums/status.dart';
 import 'package:restock/features/auth/presentation/blocs/login_bloc.dart';
 import 'package:restock/features/auth/presentation/blocs/login_event.dart';
 import 'package:restock/features/auth/presentation/blocs/login_state.dart';
-import 'package:restock/features/home/presentation/pages/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -28,10 +27,14 @@ class _LoginPageState extends State<LoginPage> {
         listener: (context, state) {
           switch (state.status) {
             case Status.success:
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => const HomePage()),
-              );
+              // Verificar suscripción: 0 = sin suscripción, 1 = anual, 2 = semestral
+              if (state.userSubscription == 0) {
+                // Sin suscripción, ir a página de planes
+                Navigator.pushReplacementNamed(context, '/subscriptions');
+              } else {
+                // Con suscripción, ir a home
+                Navigator.pushReplacementNamed(context, '/home');
+              }
               break;
 
             case Status.failure:
