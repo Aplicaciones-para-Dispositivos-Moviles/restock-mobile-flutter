@@ -7,11 +7,11 @@ class AuthService {
   // LOGIN -------------------------
   Future<String> login(String username, String password) async {
     try {
-      final Uri uri = Uri.parse(
-        ApiConstants.baseUrl,
-      ).replace(path: ApiConstants.loginEndpoint);
+      final uri = Uri.parse(
+        '${ApiConstants.baseUrl}${ApiConstants.loginEndpoint}',
+      );
 
-      final http.Response response = await http.post(
+      final response = await http.post(
         uri,
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({'username': username, 'password': password}),
@@ -19,7 +19,7 @@ class AuthService {
 
       if (response.statusCode == HttpStatus.ok) {
         final data = jsonDecode(response.body);
-        return data["token"]; // <-- Ajusta si tu backend responde distinto
+        return data['token'];  
       }
 
       throw HttpException('Unexpected HTTP Status: ${response.statusCode}');
@@ -35,17 +35,17 @@ class AuthService {
     required int roleId,
   }) async {
     try {
-      final Uri uri = Uri.parse(
-        ApiConstants.baseUrl,
-      ).replace(path: ApiConstants.registerEndpoint);
+      final uri = Uri.parse(
+        '${ApiConstants.baseUrl}${ApiConstants.registerEndpoint}',
+      );
 
-      final http.Response response = await http.post(
+      final response = await http.post(
         uri,
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           'username': username,
           'password': password,
-          'roleId': 1,
+          'roleId': roleId,
         }),
       );
 
