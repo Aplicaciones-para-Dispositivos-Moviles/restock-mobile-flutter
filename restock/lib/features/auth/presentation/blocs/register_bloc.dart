@@ -23,6 +23,10 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
       emit(state.copyWith(password: event.password));
     });
 
+    on<OnRoleChanged>((event, emit) {
+      emit(state.copyWith(roleId: event.roleId));
+    });
+
     on<RegisterSubmitted>(_onRegisterSubmitted);
   }
 
@@ -33,11 +37,22 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
     emit(state.copyWith(status: Status.loading));
 
     try {
-      // Registrar usuario
+      // 1. Register the user
+
       await service.register(
         username: state.username,
         password: state.password,
-        roleId: 1,
+        roleId: state.roleId,
+      );
+
+      // 2. Automatically login after successful registration
+      final user = await service.login(state.username, state.password);
+
+      // 3. Save the session (userId, token and username)
+      await storage.saveSession(
+        userId: user.id,
+        token: user.token,
+        username: user.username,
       );
 
       // Hacer login automático después del registro

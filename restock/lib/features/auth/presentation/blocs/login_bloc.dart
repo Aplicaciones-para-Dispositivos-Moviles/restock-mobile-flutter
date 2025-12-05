@@ -31,10 +31,11 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       // ahora login devuelve User
       final user = await service.login(state.email, state.password);
 
-      // guardamos userId y token reales
+      // guardamos userId, token y username
       await storage.saveSession(
         userId: user.id,
         token: user.token,
+        username: user.username,
       );
 
       emit(state.copyWith(
