@@ -13,7 +13,7 @@ class ProfileDto {
   final String? businessName;
   final String? businessAddress;
   final String? description;
-  final List<CategoryDto> categories;
+  final List<CategoryDto>? businessCategories;
 
   const ProfileDto({
     required this.id,
@@ -27,7 +27,7 @@ class ProfileDto {
     this.businessName,
     this.businessAddress,
     this.description,
-    required this.categories,
+    this.businessCategories,
   });
 
   factory ProfileDto.fromJson(Map<String, dynamic> json) {
@@ -45,7 +45,7 @@ class ProfileDto {
       businessName: json['businessName'],
       businessAddress: json['businessAddress'],
       description: json['description'],
-      categories: rawCategories
+      businessCategories: rawCategories
           .map((e) => CategoryDto.fromJson(e))
           .toList()
           .cast<CategoryDto>(),
@@ -65,7 +65,7 @@ class ProfileDto {
       businessName: businessName ?? '',
       businessAddress: businessAddress ?? '',
       description: description,
-      categories: categories.map((c) => c.toDomain()).toList(),
+      categories: businessCategories!.map((c) => c.toDomain()).toList(),
     );
   }
 }
