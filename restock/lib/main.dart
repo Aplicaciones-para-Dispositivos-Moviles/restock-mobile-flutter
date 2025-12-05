@@ -43,7 +43,10 @@ void main() async {
           ),
         ),
         BlocProvider(
-          create: (_) => RegisterBloc(service: authService),
+          create: (_) => RegisterBloc(
+            service: authService,
+            storage: authStorage,
+          ),
         ),
         BlocProvider(
           create: (_) => InventoryBloc(repository: inventoryRepository),
