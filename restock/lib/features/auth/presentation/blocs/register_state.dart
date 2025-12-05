@@ -6,6 +6,7 @@ class RegisterState {
   final String password;
   final int roleId;
   final String? message;
+  final int? userSubscription;
 
   const RegisterState({
     this.status = Status.initial,
@@ -13,6 +14,7 @@ class RegisterState {
     this.password = '',
     this.roleId = 1, // Default: Provider
     this.message,
+    this.userSubscription,
   });
 
   RegisterState copyWith({
@@ -21,6 +23,7 @@ class RegisterState {
     String? password,
     int? roleId,
     String? message,
+    int? userSubscription,
   }) {
     return RegisterState(
       status: status ?? this.status,
@@ -28,6 +31,7 @@ class RegisterState {
       password: password ?? this.password,
       roleId: roleId ?? this.roleId,
       message: message ?? this.message,
+      userSubscription: userSubscription ?? this.userSubscription,
     );
   }
 }

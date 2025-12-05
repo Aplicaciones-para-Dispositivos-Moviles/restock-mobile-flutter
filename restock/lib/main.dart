@@ -15,6 +15,12 @@ import 'package:restock/features/resource/inventory/data/repositories/inventory_
 import 'package:restock/features/resource/inventory/presentation/blocs/inventory_bloc.dart';
 import 'package:restock/features/resource/inventory/presentation/pages/inventory_page.dart';
 
+// SUBSCRIPTIONS
+import 'package:restock/features/subscriptions/data/remote/subscription_service.dart';
+import 'package:restock/features/subscriptions/presentation/blocs/subscription_bloc.dart';
+import 'package:restock/features/subscriptions/presentation/pages/subscription_plans_page.dart';
+import 'package:restock/features/subscriptions/presentation/pages/payment_page.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -33,6 +39,8 @@ void main() async {
     },
   );
 
+  final subscriptionService = SubscriptionService();
+
   runApp(
     MultiBlocProvider(
       providers: [
@@ -50,6 +58,12 @@ void main() async {
         ),
         BlocProvider(
           create: (_) => InventoryBloc(repository: inventoryRepository),
+        ),
+        BlocProvider(
+          create: (_) => SubscriptionBloc(
+            service: subscriptionService,
+            storage: authStorage,
+          ),
         ),
       ],
       child: const RestockApp(),
@@ -70,6 +84,8 @@ class RestockApp extends StatelessWidget {
         '/login': (_) => const LoginPage(),
         '/home': (_) => const HomePage(),
         '/inventory': (_) => const InventoryPage(),
+        '/subscriptions': (_) => const SubscriptionPlansPage(),
+        '/payment': (_) => const PaymentPage(),
       },
     );
   }

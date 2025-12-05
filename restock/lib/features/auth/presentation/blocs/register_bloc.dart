@@ -38,6 +38,7 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
 
     try {
       // 1. Register the user
+
       await service.register(
         username: state.username,
         password: state.password,
@@ -54,7 +55,19 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
         username: user.username,
       );
 
-      emit(state.copyWith(status: Status.success));
+      // Hacer login automático después del registro
+      final user = await service.login(state.username, state.password);
+
+      // Guardar sesión
+      await storage.saveSession(
+        userId: user.id,
+        token: user.token,
+      );
+
+      emit(state.copyWith(
+        status: Status.success,
+        userSubscription: user.subscription,
+      ));
     } catch (e) {
       emit(state.copyWith(
         status: Status.failure,
