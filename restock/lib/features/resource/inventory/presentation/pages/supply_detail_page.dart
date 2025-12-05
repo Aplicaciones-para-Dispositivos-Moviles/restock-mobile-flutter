@@ -47,7 +47,7 @@ class SupplyDetailPage extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             Card(
-              color: Theme.of(context).colorScheme.surfaceVariant,
+              color:  Color.fromRGBO(92, 164, 104, 1),
               child: Padding(
                 padding: const EdgeInsets.all(16),
                 child: Column(

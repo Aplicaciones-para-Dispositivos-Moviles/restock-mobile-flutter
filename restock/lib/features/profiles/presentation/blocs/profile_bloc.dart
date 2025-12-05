@@ -131,34 +131,37 @@ FutureOr<void> _onUpdateAvatar(
   }
 }
 
-  FutureOr<void> _onDeleteAccount(
-    DeleteAccount event,
-    Emitter<ProfileState> emit,
-  ) async {
+Future<void> _onDeleteAccount(
+  DeleteAccount event,
+  Emitter<ProfileState> emit,
+) async {
+  try {
     emit(state.copyWith(status: Status.loading));
-    try {
-      final token = await storage.getToken();
-      final userId = await storage.getUserId();
 
-      if (token == null || userId == null) {
-        emit(state.copyWith(
-          status: Status.failure,
-          errorMessage: 'User not authenticated',
-        ));
-        return;
-      }
+    final token = await storage.getToken();
+    final userId = await storage.getUserId();
 
-      await service.deleteAccount(token, userId);
-      await storage.clear();
-
-      emit(state.copyWith(status: Status.success));
-    } catch (e) {
+    if (token == null || userId == null) {
       emit(state.copyWith(
         status: Status.failure,
-        errorMessage: e.toString(),
+        errorMessage: 'User not authenticated',
       ));
+      return;
     }
+
+    await service.deleteAccount(token, userId);
+
+    await storage.clear();
+
+    emit(state.copyWith(status: Status.success, profile: null));
+  } catch (e) {
+    emit(state.copyWith(
+      status: Status.failure,
+      errorMessage: e.toString(),
+    ));
   }
+}
+
 
   FutureOr<void> _onLogout(
     Logout event,

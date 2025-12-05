@@ -50,9 +50,6 @@ class ProfileService {
         '${ApiConstants.baseUrl}/profiles/$userId/personal',
       );
 
-      print('DEBUG ProfileService: Updating avatar URL');
-      print('DEBUG ProfileService: URI: $uri');
-      print('DEBUG ProfileService: Avatar URL: $avatarUrl');
 
       final requestBody = {
         'firstName': currentProfile.firstName,
@@ -64,7 +61,6 @@ class ProfileService {
         'avatar': avatarUrl,
       };
 
-      print('DEBUG ProfileService: Request body: ${jsonEncode(requestBody)}');
 
       final response = await http.put(
         uri,
@@ -75,20 +71,15 @@ class ProfileService {
         body: jsonEncode(requestBody),
       );
 
-      print('DEBUG ProfileService: Response status: ${response.statusCode}');
-      print('DEBUG ProfileService: Response body: ${response.body}');
 
       if (response.statusCode == HttpStatus.ok) {
-        print('DEBUG ProfileService: Avatar URL updated successfully');
         return;
       }
 
       throw HttpException('Failed to update avatar: ${response.statusCode} - ${response.body}');
     } on SocketException catch (e) {
-      print('DEBUG ProfileService: Socket exception: $e');
       throw const SocketException('Failed to establish network connection');
     } catch (e) {
-      print('DEBUG ProfileService: Error: $e');
       rethrow;
     }
   }

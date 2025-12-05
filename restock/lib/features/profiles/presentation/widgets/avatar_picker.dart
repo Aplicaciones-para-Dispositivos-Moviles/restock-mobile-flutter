@@ -69,7 +69,7 @@ class AvatarPicker extends StatelessWidget {
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               color: hasAvatar
-                  ? Theme.of(context).colorScheme.surfaceContainerHighest
+                  ? Color.fromRGBO(92, 164, 104, 1)
                   : _getAvatarColor(context),
             ),
             child: hasAvatar
