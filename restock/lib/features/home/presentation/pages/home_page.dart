@@ -1,11 +1,15 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart'; 
+import 'package:restock/features/auth/data/local/auth_storage.dart';
 import 'package:restock/features/common/placeholder_screen.dart';
 import 'package:restock/features/home/presentation/widgets/quick_action_card.dart';
+import 'package:restock/features/resource/inventory/presentation/blocs/inventory_bloc.dart';
+import 'package:restock/features/resource/inventory/presentation/blocs/inventory_event.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
-  void _goTo(BuildContext context, String title) {
+  void _goPlaceholder(BuildContext context, String title) {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (_) => PlaceholderScreen(title: title)),
@@ -17,13 +21,12 @@ class HomePage extends StatelessWidget {
     const primaryGreen = Color(0xFF1B5E20);
 
     return Scaffold(
-      // ------------------- DRAWER -------------------
       drawer: Drawer(
         child: Column(
           children: [
-            DrawerHeader(
-              decoration: const BoxDecoration(color: primaryGreen),
-              child: const Center(
+            const DrawerHeader(
+              decoration: BoxDecoration(color: primaryGreen),
+              child: Center(
                 child: Text(
                   "Restock Menu",
                   style: TextStyle(color: Colors.white, fontSize: 20),
@@ -31,44 +34,48 @@ class HomePage extends StatelessWidget {
               ),
             ),
 
-            // Opciones de navegación
+            // INVENTORY -> va a la ruta real
             ListTile(
               leading: const Icon(Icons.inventory),
               title: const Text("Inventory"),
-              onTap: () => _goTo(context, "Inventory"),
-            ),
-            ListTile(
-              leading: const Icon(Icons.shopping_cart),
-              title: const Text("Orders"),
-              onTap: () => _goTo(context, "Orders"),
-            ),
-            
-            const Spacer(),
-
-            // ------------------- LOGOUT ABAJO -------------------
-            ListTile(
-              leading: const Icon(Icons.logout, color: Colors.red),
-              title: const Text("Logout", style: TextStyle(color: Colors.red)),
               onTap: () {
-                Navigator.pushNamedAndRemoveUntil(
-                    context, "/login", (_) => false);
+                Navigator.pop(context); // cierra drawer
+                Navigator.pushNamed(context, '/inventory');
               },
             ),
 
+            // Otras opciones siguen con placeholder
+            ListTile(
+              leading: const Icon(Icons.shopping_cart),
+              title: const Text("Orders"),
+              onTap: () => _goPlaceholder(context, "Orders"),
+            ),
+
+            const Spacer(),
+
+            ListTile(
+              leading: const Icon(Icons.logout, color: Colors.red),
+              title:
+                  const Text("Logout", style: TextStyle(color: Colors.red)),
+              onTap: () async {
+                await AuthStorage().clear(); // borra userId y token
+
+                context.read<InventoryBloc>()
+                    .add(const InventoryClearRequested()); // limpiamos el estado
+
+                Navigator.pushNamedAndRemoveUntil(context, "/login", (_) => false);
+              },
+            ),
             const SizedBox(height: 16),
           ],
         ),
       ),
-
-      // ------------------- APPBAR -------------------
       appBar: AppBar(
         title: const Text("Restock"),
         centerTitle: true,
         backgroundColor: primaryGreen,
         foregroundColor: Colors.white,
       ),
-
-      // ------------------- BODY ORIGINAL -------------------
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -88,9 +95,7 @@ class HomePage extends StatelessWidget {
                     color: primaryGreen,
                   ),
             ),
-
             const SizedBox(height: 32),
-
             Text(
               "Quick Actions",
               style: Theme.of(context)
@@ -98,9 +103,7 @@ class HomePage extends StatelessWidget {
                   .titleLarge
                   ?.copyWith(fontWeight: FontWeight.bold),
             ),
-
             const SizedBox(height: 16),
-
             Row(
               children: [
                 Expanded(
@@ -108,7 +111,7 @@ class HomePage extends StatelessWidget {
                     icon: Icons.inventory,
                     title: "Inventory",
                     subtitle: "Track supplies",
-                    onTap: () => _goTo(context, "Inventory"),
+                    onTap: () => Navigator.pushNamed(context, '/inventory'),
                   ),
                 ),
                 const SizedBox(width: 16),
@@ -117,16 +120,12 @@ class HomePage extends StatelessWidget {
                     icon: Icons.shopping_cart,
                     title: "Orders",
                     subtitle: "Make orders",
-                    onTap: () => _goTo(context, "Orders"),
+                    onTap: () => _goPlaceholder(context, "Orders"),
                   ),
                 ),
               ],
             ),
-
-            const SizedBox(height: 16),
-
             const SizedBox(height: 32),
-
             Card(
               elevation: 2,
               shape: RoundedRectangleBorder(
@@ -148,7 +147,8 @@ class HomePage extends StatelessWidget {
                               .titleLarge
                               ?.copyWith(fontWeight: FontWeight.bold),
                         ),
-                        Icon(Icons.trending_up, color: Colors.green.shade700),
+                        Icon(Icons.trending_up,
+                            color: Colors.green.shade700),
                       ],
                     ),
                     const SizedBox(height: 8),

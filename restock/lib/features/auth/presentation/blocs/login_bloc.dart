@@ -1,14 +1,21 @@
+ 
 import 'dart:async';
+
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:restock/core/enums/status.dart';
+import 'package:restock/features/auth/data/local/auth_storage.dart';
 import 'package:restock/features/auth/data/remote/auth_service.dart';
 import 'package:restock/features/auth/presentation/blocs/login_event.dart';
 import 'package:restock/features/auth/presentation/blocs/login_state.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
   final AuthService service;
-  
-  LoginBloc({required this.service}) : super(const LoginState()) {
+  final AuthStorage storage;
+
+  LoginBloc({
+    required this.service,
+    required this.storage,
+  }) : super(const LoginState()) {
     on<OnEmailChanged>(
       (event, emit) => emit(state.copyWith(email: event.email)),
     );
@@ -21,7 +28,15 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   FutureOr<void> _onLogin(Login event, Emitter<LoginState> emit) async {
     emit(state.copyWith(status: Status.loading));
     try {
-      await service.login(state.email, state.password);
+      // ahora login devuelve User
+      final user = await service.login(state.email, state.password);
+
+      // guardamos userId y token reales
+      await storage.saveSession(
+        userId: user.id,
+        token: user.token,
+      );
+
       emit(state.copyWith(status: Status.success));
     } catch (e) {
       emit(state.copyWith(status: Status.failure, message: e.toString()));
