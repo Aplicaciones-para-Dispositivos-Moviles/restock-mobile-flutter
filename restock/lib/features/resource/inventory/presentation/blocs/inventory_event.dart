@@ -6,6 +6,10 @@ abstract class InventoryEvent {
   const InventoryEvent();
 }
 
+class InventoryClearRequested extends InventoryEvent {
+  const InventoryClearRequested();
+}
+
 class InventoryLoadRequested extends InventoryEvent {
   const InventoryLoadRequested();
 }

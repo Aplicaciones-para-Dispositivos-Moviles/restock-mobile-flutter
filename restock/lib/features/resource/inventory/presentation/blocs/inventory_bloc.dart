@@ -16,6 +16,9 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
     on<CreateCustomSupplyEvent>(_onCreateCustomSupply);
     on<UpdateCustomSupplyEvent>(_onUpdateCustomSupply);
     on<DeleteCustomSupplyEvent>(_onDeleteCustomSupply);
+    on<InventoryClearRequested>((event, emit) {
+      emit(const InventoryState()); // estado vacío
+    });
   }
 
   Future<void> _onLoadInventory(
