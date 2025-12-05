@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:restock/core/enums/status.dart';
-import 'package:restock/features/auth/data/auth_service.dart';
+import 'package:restock/features/auth/data/remote/auth_service.dart';
 import 'package:restock/features/auth/presentation/blocs/login_event.dart';
 import 'package:restock/features/auth/presentation/blocs/login_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
