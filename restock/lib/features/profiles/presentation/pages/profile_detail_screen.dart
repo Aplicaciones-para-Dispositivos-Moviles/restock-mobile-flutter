@@ -175,7 +175,7 @@ class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
                             Icon(
                               Icons.business,
                               size: 24,
-                              color: Theme.of(context).colorScheme.primary,
+                              color: Color.fromRGBO(92, 164, 104, 1)
                             ),
                             const SizedBox(width: 12),
                             Expanded(
@@ -222,9 +222,7 @@ class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
                                     .textTheme
                                     .bodySmall
                                     ?.copyWith(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .onSurfaceVariant,
+                                      color:  Color.fromRGBO(92, 164, 104, 1)
                                     ),
                               ),
                               const SizedBox(height: 8),
@@ -250,7 +248,7 @@ class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
                           Icon(
                             Icons.lock,
                             size: 24,
-                            color: Theme.of(context).colorScheme.primary,
+                            color: Color.fromRGBO(92, 164, 104, 1),
                           ),
                           const SizedBox(width: 12),
                           Expanded(
@@ -261,7 +259,7 @@ class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
                           ),
                           Icon(
                             Icons.chevron_right,
-                            color: Theme.of(context).colorScheme.onSurfaceVariant,
+                            color:  Color.fromRGBO(92, 164, 104, 1),
                           ),
                         ],
                       ),
@@ -330,7 +328,7 @@ class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
   void _handleDeleteAccount(BuildContext context) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
+      builder: (dialogContext) => AlertDialog(
         icon: Icon(
           Icons.warning,
           color: Theme.of(context).colorScheme.error,
@@ -342,14 +340,17 @@ class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.of(context).pop(),
+            onPressed: () => Navigator.of(dialogContext).pop(),
             child: const Text('Cancel'),
           ),
           FilledButton(
-            onPressed: () {
+            onPressed: () async {
               context.read<ProfileBloc>().add(const DeleteAccount());
-              Navigator.of(context).pop();
-              // TODO: Navigate to login screen
+              Navigator.of(dialogContext).pop();
+              Navigator.of(context).pushNamedAndRemoveUntil(
+                '/login',
+                (route) => false,
+              );
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(content: Text('Account deleted successfully')),
               );
@@ -437,7 +438,7 @@ class _InfoItemWidget extends StatelessWidget {
           Icon(
             item.icon,
             size: 20,
-            color: Theme.of(context).colorScheme.onSurfaceVariant,
+            color:  Color.fromRGBO(92, 164, 104, 1),
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -447,7 +448,7 @@ class _InfoItemWidget extends StatelessWidget {
                 Text(
                   item.label,
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        color:  Color.fromRGBO(92, 164, 104, 1),
                       ),
                 ),
                 const SizedBox(height: 4),

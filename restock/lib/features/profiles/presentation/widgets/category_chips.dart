@@ -17,7 +17,7 @@ class CategoryChips extends StatelessWidget {
         child: Text(
           'No categories',
           style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
+                color:  Color.fromRGBO(92, 164, 104, 1),
               ),
         ),
       );

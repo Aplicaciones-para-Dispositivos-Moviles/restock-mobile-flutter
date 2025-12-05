@@ -40,16 +40,18 @@ class _BusinessInfoStepState extends State<BusinessInfoStep> {
       final token = await AuthStorage().getToken();
       if (token != null) {
         final categories = await CategoryService().getCategories(token);
-        setState(() {
-          _categories = categories;
-          _isLoadingCategories = false;
-        });
+        if (mounted) {
+          setState(() {
+            _categories = categories;
+            _isLoadingCategories = false;
+          });
+        }
       }
     } catch (e) {
-      setState(() {
-        _isLoadingCategories = false;
-      });
       if (mounted) {
+        setState(() {
+          _isLoadingCategories = false;
+        });
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Failed to load categories: $e')),
         );
