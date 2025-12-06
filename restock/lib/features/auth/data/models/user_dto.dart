@@ -41,4 +41,6 @@ class UserDto {
       profile: profile?.toDomain(),
     );
   }
+
+  toJson() {}
 }

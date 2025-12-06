@@ -12,13 +12,17 @@ class OrderDto {
   final int? adminRestaurantId;
   final int? supplierId;
   final UserDto? supplier;
-  final String? requestedDate; // campo "date" en el JSON
+  final String? requestedDate;
   final bool? partiallyAccepted;
   final int? requestedProductsCount;
   final double? totalPrice;
   final String? state;
   final String? situation;
   final List<OrderBatchItemDto>? batchItems;
+
+  final String? description;     
+  final String? estimatedShipDate;
+  final String? estimatedShipTime;
 
   const OrderDto({
     this.id,
@@ -32,27 +36,36 @@ class OrderDto {
     this.state,
     this.situation,
     this.batchItems,
+    this.description,
+    this.estimatedShipDate,
+    this.estimatedShipTime,
   });
 
   factory OrderDto.fromJson(Map<String, dynamic> json) {
+    print('OrderDto.fromJson recibido: $json'); // DEBUG
+    
     final List items = json['batchItems'] ?? [];
 
     return OrderDto(
       id: json['id'],
       adminRestaurantId: json['adminRestaurantId'],
       supplierId: json['supplierId'],
-      supplier:
-          json['supplier'] != null ? UserDto.fromJson(json['supplier']) : null,
-      requestedDate: json['date'],
-      partiallyAccepted: json['partiallyAccepted'],
+      supplier: json['supplier'] != null 
+          ? UserDto.fromJson(json['supplier']) 
+          : null,
+      requestedDate: json['date']?.toString(),
+      partiallyAccepted: json['partiallyAccepted'] ?? false,
       requestedProductsCount: json['requestedProductsCount'],
       totalPrice: (json['totalPrice'] as num?)?.toDouble(),
-      state: json['state'],
-      situation: json['situation'],
+      state: json['state']?.toString(),
+      situation: json['situation']?.toString(),
       batchItems: items
           .map((e) => OrderBatchItemDto.fromJson(e))
           .toList()
           .cast<OrderBatchItemDto>(),
+      description: json['description']?.toString(),
+      estimatedShipDate: json['estimatedShipDate']?.toString(),
+      estimatedShipTime: json['estimatedShipTime']?.toString()
     );
   }
 
@@ -60,7 +73,7 @@ class OrderDto {
         'id': id,
         'adminRestaurantId': adminRestaurantId,
         'supplierId': supplierId,
-        'supplier': supplier, // normalmente solo en response
+        'supplier': supplier?.toJson(),
         'date': requestedDate,
         'partiallyAccepted': partiallyAccepted,
         'requestedProductsCount': requestedProductsCount,
@@ -68,10 +81,12 @@ class OrderDto {
         'state': state,
         'situation': situation,
         'batchItems': batchItems?.map((e) => e.toJson()).toList(),
+        'description': description,
+        'estimatedShipDate': estimatedShipDate,
+        'estimatedShipTime': estimatedShipTime,
       };
 
   Order toDomain() {
-     
     final User supplierUser = supplier?.toDomain() ??
         User(
           id: supplierId ?? 0,
@@ -82,12 +97,13 @@ class OrderDto {
           subscription: 0,
         );
 
-    // Parseo safe de la fecha (ISO -> solo yyyy-MM-dd)
     final parsedDate = requestedDate != null
         ? (requestedDate!.split('T').isNotEmpty
             ? requestedDate!.split('T').first
             : requestedDate!)
         : '';
+
+    
 
     return Order(
       id: id ?? 0,
@@ -102,10 +118,12 @@ class OrderDto {
       situation: _parseSituation(situation),
       batchItems:
           batchItems?.map((item) => item.toDomain()).toList() ?? const [],
+      description: description ?? '',
+      estimatedShipDate: estimatedShipDate ?? '',
+      estimatedShipTime: estimatedShipTime ?? '',
     );
   }
 
-  // helpers string API -> enum dominio
   OrderState _parseState(String? value) {
     switch (value) {
       case 'PREPARING':

@@ -166,4 +166,24 @@ class InventoryRepositoryImpl implements InventoryRepository {
       // ignore
     }
   }
+ 
+  @override
+  Future<List<Batch>> getBatchesByUser(int userId) async {
+    try {
+      final dtos = await service.getBatchesByUserId(userId);
+      return dtos.map((e) => e.toDomain()).toList();
+    } catch (_) {
+      return [];
+    }
+  }
+
+  @override
+  Future<List<CustomSupply>> getCustomSuppliesByUser(int userId) async {
+    try {
+      final dtos = await service.getCustomSuppliesByUserId(userId);
+      return dtos.map((e) => e.toDomain()).toList();
+    } catch (_) {
+      return [];
+    }
+  }
 }

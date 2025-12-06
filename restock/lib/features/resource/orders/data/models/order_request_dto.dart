@@ -1,5 +1,5 @@
- 
- 
+// lib/features/resource/orders/data/models/order_request_dto.dart
+
 import 'package:restock/features/resource/orders/data/models/order_batch_item_request_dto.dart';
 import 'package:restock/features/resource/orders/domain/models/order.dart';
 import 'package:restock/features/resource/orders/domain/models/order_situation.dart';
@@ -28,7 +28,12 @@ class OrderRequestDto {
     required this.batches,
   });
 
-  /// Construye el request desde el modelo de dominio (equivalente a `toRequestDto` en Kotlin)
+  /// helpers para enums -> string API usando las extensiones apiValue
+  static String _stateToApi(OrderState state) => state.apiValue;
+  static String _situationToApi(OrderSituation situation) =>
+      situation.apiValue;
+
+  /// Construye el request desde el modelo de dominio
   factory OrderRequestDto.fromDomain(Order order) {
     return OrderRequestDto(
       adminRestaurantId: order.adminRestaurantId,
@@ -56,31 +61,4 @@ class OrderRequestDto {
         'situation': situation,
         'batches': batches.map((b) => b.toJson()).toList(),
       };
-
-  // helpers para enums -> string API
-  static String _stateToApi(OrderState state) {
-    switch (state) {
-      case OrderState.onHold:
-        return 'ON_HOLD';
-      case OrderState.preparing:
-        return 'PREPARING';
-      case OrderState.onTheWay:
-        return 'ON_THE_WAY';
-      case OrderState.delivered:
-        return 'DELIVERED';
-    }
-  }
-
-  static String _situationToApi(OrderSituation situation) {
-    switch (situation) {
-      case OrderSituation.pending:
-        return 'PENDING';
-      case OrderSituation.approved:
-        return 'APPROVED';
-      case OrderSituation.declined:
-        return 'DECLINED';
-      case OrderSituation.cancelled:
-        return 'CANCELLED';
-    }
-  }
 }

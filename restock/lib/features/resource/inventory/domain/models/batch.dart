@@ -7,6 +7,7 @@ class Batch {
   final int? userId;
   final int? userRoleId;
   final CustomSupply? customSupply;
+  final int? customSupplyId;
   final double stock;
   final String? expirationDate;
 
@@ -15,6 +16,7 @@ class Batch {
     this.userId,
     this.userRoleId,
     this.customSupply,
+    this.customSupplyId,
     required this.stock,
     this.expirationDate,
   });
@@ -26,6 +28,7 @@ class Batch {
     CustomSupply? customSupply,
     double? stock,
     String? expirationDate,
+    int? customSupplyId,
   }) {
     return Batch(
       id: id ?? this.id,
@@ -34,6 +37,7 @@ class Batch {
       customSupply: customSupply ?? this.customSupply,
       stock: stock ?? this.stock,
       expirationDate: expirationDate ?? this.expirationDate,
+      customSupplyId: customSupplyId ?? this.customSupplyId,
     );
   }
 }

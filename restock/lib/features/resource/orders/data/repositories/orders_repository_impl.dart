@@ -3,6 +3,8 @@
 import 'package:restock/features/resource/orders/data/models/order_request_dto.dart';
 import 'package:restock/features/resource/orders/data/remote/orders_service.dart';
 import 'package:restock/features/resource/orders/domain/models/order.dart';
+import 'package:restock/features/resource/orders/domain/models/order_situation.dart';
+import 'package:restock/features/resource/orders/domain/models/order_state.dart';
 import 'package:restock/features/resource/orders/domain/repositories/orders_repository.dart';
 
 class OrdersRepositoryImpl implements OrdersRepository {
@@ -14,8 +16,11 @@ class OrdersRepositoryImpl implements OrdersRepository {
   Future<List<Order>> getAllOrders() async {
     try {
       final dtos = await service.getAllOrders();
-      return dtos.map((e) => e.toDomain()).toList();
-    } catch (_) {
+      final orders = dtos.map((e) => e.toDomain()).toList();
+      print(' Repository: Converted ${orders.length} orders to domain');
+      return orders;
+    } catch (e) {
+      print(' Repository getAllOrders error: $e');
       return [];
     }
   }
@@ -27,19 +32,37 @@ class OrdersRepositoryImpl implements OrdersRepository {
       final dtos = await service.getOrdersByAdminRestaurantId(
         adminRestaurantId,
       );
-      return dtos.map((e) => e.toDomain()).toList();
-    } catch (_) {
+      final orders = dtos.map((e) => e.toDomain()).toList();
+      print(' Repository: Converted ${orders.length} orders to domain');
+      return orders;
+    } catch (e) {
+      print(' Repository getOrdersByAdminRestaurantId error: $e');
       return [];
     }
   }
 
   @override
   Future<List<Order>> getOrdersBySupplierId(int supplierId) async {
+    print(' Repository: Getting orders for supplier $supplierId');
+    
     try {
       final dtos = await service.getOrdersBySupplierId(supplierId);
-      return dtos.map((e) => e.toDomain()).toList();
-    } catch (_) {
-      return [];
+      print(' Repository: Received ${dtos.length} DTOs from service');
+      
+      final orders = dtos.map((e) => e.toDomain()).toList();
+      print(' Repository: Converted ${orders.length} orders to domain');
+      
+      // Debug: imprime la primera orden
+      if (orders.isNotEmpty) {
+        final first = orders.first;
+        print('🔍 First order: id=${first.id}, situation=${first.situation}, state=${first.state}');
+      }
+      
+      return orders;
+    } catch (e, stackTrace) {
+      print(' Repository getOrdersBySupplierId error: $e');
+      print(' StackTrace: $stackTrace');
+      rethrow; //  MUY IMPORTANTE: Relanza el error para que el BLoC lo capture
     }
   }
 
@@ -48,7 +71,8 @@ class OrdersRepositoryImpl implements OrdersRepository {
     try {
       final dto = await service.getOrderById(orderId);
       return dto?.toDomain();
-    } catch (_) {
+    } catch (e) {
+      print(' Repository getOrderById error: $e');
       return null;
     }
   }
@@ -59,18 +83,20 @@ class OrdersRepositoryImpl implements OrdersRepository {
       final dto = OrderRequestDto.fromDomain(order);
       final responseDto = await service.createOrder(dto);
       return responseDto?.toDomain();
-    } catch (_) {
+    } catch (e) {
+      print(' Repository createOrder error: $e');
       return null;
     }
   }
 
-  @override
+  @override 
   Future<Order?> updateOrder(Order order) async {
     try {
-      final dto = OrderRequestDto.fromDomain(order);
-      final responseDto = await service.updateOrder(order.id, dto);
+      // ahora usamos el método nuevo
+      final responseDto = await service.updateOrderDetails(order);
       return responseDto?.toDomain();
-    } catch (_) {
+    } catch (e) {
+      print(' Repository updateOrder error: $e');
       return null;
     }
   }
@@ -79,8 +105,23 @@ class OrdersRepositoryImpl implements OrdersRepository {
   Future<void> deleteOrder(int orderId) async {
     try {
       await service.deleteOrder(orderId);
-    } catch (_) {
-      // ignora error por ahora
+    } catch (e) {
+      print(' Repository deleteOrder error: $e');
     }
   }
+
+  @override
+  Future<Order> updateOrderState({
+    required int orderId,
+    required OrderState newState,
+    required OrderSituation newSituation,
+  }) =>
+      service.updateOrderState(
+        orderId: orderId,
+        newState: newState,
+        newSituation: newSituation,
+      );
+
+  
 }
+

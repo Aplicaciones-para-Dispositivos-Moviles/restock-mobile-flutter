@@ -20,4 +20,7 @@ abstract class InventoryRepository {
   Future<Batch?> createBatch(Batch batch);
   Future<Batch?> updateBatch(Batch batch);
   Future<void> deleteBatch(String batchId);
+  
+  Future<List<Batch>> getBatchesByUser(int userId);
+  Future<List<CustomSupply>> getCustomSuppliesByUser(int userId);
 }
