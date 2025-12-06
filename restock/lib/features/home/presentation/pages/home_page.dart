@@ -297,12 +297,12 @@ class _HomePageState extends State<HomePage> {
                       ),
                       const SizedBox(width: 16),
                       Expanded(
-                        child: QuickActionCard(
-                          icon: Icons.shopping_cart,
-                          title: "Orders",
-                          subtitle: "Make orders",
-                          onTap: () => _goPlaceholder(context, "Orders"),
-                        ),
+                       child: QuickActionCard(
+                         icon: Icons.shopping_cart,
+                         title: "Orders",
+                         subtitle: "Manage orders",
+                         onTap: () => _goToOrders(context),
+                       ),
                       ),
                     ],
                   ),
