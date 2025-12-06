@@ -101,7 +101,7 @@ class BatchListSection extends StatelessWidget {
                         ),
                         IconButton(
                           onPressed: () => onBatchClick(batch.id),
-                          icon: Icon(Icons.search, color: greenColor),
+                          icon: Icon(Icons.remove_red_eye, color: greenColor),
                         ),
                       ],
                     ),
