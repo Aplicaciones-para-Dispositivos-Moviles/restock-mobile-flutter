@@ -61,7 +61,6 @@ class _AlertsPageState extends State<AlertsPage> {
           IconButton(
             icon: const Icon(Icons.refresh),
             onPressed: () {
-              // Recargar las alertas
               context.read<AlertBloc>().add(const AlertsLoadRequested());
             },
           ),
@@ -88,8 +87,6 @@ class _AlertsPageState extends State<AlertsPage> {
             );
           }
 
-          // Combinar las listas si el usuario puede ver ambas o filtrar por rol
-          // Aquí combinamos para mostrar todas, priorizando la lista del proveedor
           final allAlerts = [...state.supplierAlerts, ...state.adminAlerts];
 
           if (allAlerts.isEmpty) {

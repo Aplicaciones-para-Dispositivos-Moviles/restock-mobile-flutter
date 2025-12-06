@@ -2,8 +2,8 @@
 import 'package:restock/features/alerts/domain/models/alert.dart';
 
 class AlertState {
-  final List<Alert> supplierAlerts; // Alertas para el proveedor
-  final List<Alert> adminAlerts;    // Alertas para el administrador
+  final List<Alert> supplierAlerts;
+  final List<Alert> adminAlerts; 
   final bool loading;
   final String? error;
 

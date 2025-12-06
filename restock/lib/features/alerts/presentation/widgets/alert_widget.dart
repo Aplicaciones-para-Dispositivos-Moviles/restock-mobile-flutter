@@ -17,7 +17,6 @@ class AlertCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final formattedDate = DateFormat('MMM dd, yyyy HH:mm').format(alert.date);
     
-    // Usamos Card para darle un borde y elevación, y ListTile para el contenido
     return Card(
       elevation: 4,
       shape: RoundedRectangleBorder(
@@ -40,11 +39,9 @@ class AlertCard extends StatelessWidget {
             ),
             const SizedBox(height: 8),
 
-            // Fila de Situación y Fecha
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                // Situación (con color de fondo para resaltar)
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
@@ -61,7 +58,6 @@ class AlertCard extends StatelessWidget {
                   ),
                 ),
 
-                // Fecha
                 Text(
                   formattedDate,
                   style: const TextStyle(
@@ -74,22 +70,10 @@ class AlertCard extends StatelessWidget {
             
             const SizedBox(height: 12),
             
-            // Detalles adicionales (Order ID)
             Text(
               'Order ID: #${alert.orderId}',
               style: const TextStyle(fontSize: 13, color: Colors.black54),
             ),
-            
-            // Separador opcional para más acciones
-            // Divider(color: Colors.grey.shade300, height: 20),
-            
-            // Aquí puedes añadir botones o un onTap para ir al detalle de la Orden
-            // TextButton(
-            //   onPressed: () {
-            //     // Lógica para navegar al detalle de la orden
-            //   },
-            //   child: Text('View Order Details', style: TextStyle(color: baseColor)),
-            // )
           ],
         ),
       ),

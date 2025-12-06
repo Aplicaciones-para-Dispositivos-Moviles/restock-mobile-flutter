@@ -5,7 +5,6 @@ import 'package:restock/features/alerts/domain/repositories/alert_repository.dar
 
 class AlertRepositoryImpl implements AlertRepository {
   final AlertService service;
-  /// Función para obtener el ID de usuario autenticado
   final Future<int?> Function() getUserId; 
 
   AlertRepositoryImpl({
@@ -40,7 +39,4 @@ class AlertRepositoryImpl implements AlertRepository {
       return [];
     }
   }
-
-  // Debes implementar los demás métodos definidos en la interfaz AlertRepository, 
-  // incluso si solo devuelven nulo o una lista vacía por ahora.
 }

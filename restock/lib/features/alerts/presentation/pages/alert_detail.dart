@@ -1,4 +1,3 @@
-// Archivo: restock/features/resource/alerts/presentation/pages/alert_detail_page.dart
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -9,10 +8,8 @@ class AlertDetailPage extends StatelessWidget {
 
   const AlertDetailPage({required this.alert, super.key});
 
-  // Colores base de la aplicación (replicados de AlertsPage)
   static const Color _greenColor = Color(0xFF4F8A5B);
 
-  // Helper para asignar el color basado en la situación
   Color _getDetailColor(String situation) {
     final status = situation.toUpperCase();
     switch (status) {
@@ -33,7 +30,6 @@ class AlertDetailPage extends StatelessWidget {
     }
   }
 
-  // Widget para mostrar una fila de detalle clave: valor
   Widget _buildDetailRow(String label, String value, {bool isStatus = false}) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -90,7 +86,7 @@ class AlertDetailPage extends StatelessWidget {
       appBar: AppBar(
         title: Text('Alert #${alert.id}'),
         backgroundColor: Colors.white,
-        foregroundColor: color, // El color de la barra se relaciona con el estado
+        foregroundColor: color, 
         elevation: 1,
       ),
       body: SingleChildScrollView(
@@ -98,7 +94,6 @@ class AlertDetailPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Sección de Situación/Estado (destacada)
             Center(
               child: Icon(
                 Icons.notifications_active,
@@ -116,7 +111,6 @@ class AlertDetailPage extends StatelessWidget {
             ),
             const SizedBox(height: 20),
 
-            // Mensaje principal de la Alerta
             const Text(
               'Alert Message:',
               style: TextStyle(
@@ -139,17 +133,13 @@ class AlertDetailPage extends StatelessWidget {
             ),
             const SizedBox(height: 20),
             
-            // Detalles Generales
             _buildDetailRow('Order ID', '#${alert.orderId}'),
             _buildDetailRow('Date', formattedDate),
             _buildDetailRow('Supplier ID', alert.supplierId.toString()),
             _buildDetailRow('Restaurant Admin ID', alert.adminRestaurantId.toString()),
             
-            // Espacio adicional si se agregan más campos
             const SizedBox(height: 40),
             
-            // NOTA: Aquí iría cualquier widget de acción futura 
-            // (ej: Botón para ACEPTAR/RECHAZAR, si implementas el PUT)
           ],
         ),
       ),
