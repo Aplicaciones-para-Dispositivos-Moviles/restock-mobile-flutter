@@ -5,16 +5,14 @@ import 'package:restock/features/resource/inventory/domain/models/batch.dart';
 import 'package:restock/features/resource/inventory/domain/models/custom_supply.dart';
 import 'package:restock/features/resource/inventory/domain/models/supply.dart';
 import 'package:restock/features/resource/inventory/domain/repositories/inventory_repository.dart';
- 
+
 class InventoryRepositoryImpl implements InventoryRepository {
   final InventoryService service;
+
   /// Equivalente a TokenManager.getUserId() de Kotlin
   final Future<int?> Function() getUserId;
 
-  InventoryRepositoryImpl({
-    required this.service,
-    required this.getUserId,
-  });
+  InventoryRepositoryImpl({required this.service, required this.getUserId});
 
   // ---------------------------------------------------------
   // SUPPLIES
@@ -75,8 +73,7 @@ class InventoryRepositoryImpl implements InventoryRepository {
       if (userId == null) return null;
 
       final request = CustomSupplyRequestDto.fromDomain(custom, userId);
-      final resp =
-          await service.updateCustomSupply(custom.id, request);
+      final resp = await service.updateCustomSupply(custom.id, request);
       return resp?.toDomain();
     } catch (_) {
       return null;
@@ -120,7 +117,18 @@ class InventoryRepositoryImpl implements InventoryRepository {
   @override
   Future<Batch?> createBatch(Batch batch) async {
     try {
-      final dto = BatchDto.fromDomain(batch);
+      final userId = await getUserId();
+      if (userId == null) return null;
+
+      final dto = BatchDto(
+        id: batch.id,
+        userId: userId,
+        userRoleId: batch.userRoleId,
+        customSupplyId: batch.customSupply?.id,
+        stock: batch.stock,
+        expirationDate: batch.expirationDate,
+      );
+
       final resp = await service.createBatch(dto);
       return resp?.toDomain();
     } catch (_) {
@@ -131,7 +139,18 @@ class InventoryRepositoryImpl implements InventoryRepository {
   @override
   Future<Batch?> updateBatch(Batch batch) async {
     try {
-      final dto = BatchDto.fromDomain(batch);
+      final userId = await getUserId();
+      if (userId == null) return null;
+
+      final dto = BatchDto(
+        id: batch.id,
+        userId: userId,
+        userRoleId: batch.userRoleId,
+        customSupplyId: batch.customSupply?.id,
+        stock: batch.stock,
+        expirationDate: batch.expirationDate,
+      );
+
       final resp = await service.updateBatch(batch.id, dto);
       return resp?.toDomain();
     } catch (_) {
