@@ -12,6 +12,10 @@ import 'package:restock/features/profiles/presentation/blocs/profile_state.dart'
 import 'package:restock/features/profiles/presentation/pages/profile_detail_screen.dart';
 import 'package:restock/features/resource/inventory/presentation/blocs/inventory_bloc.dart';
 import 'package:restock/features/resource/inventory/presentation/blocs/inventory_event.dart';
+import 'package:restock/features/resource/orders/data/remote/orders_service.dart';
+import 'package:restock/features/resource/orders/data/repositories/orders_repository_impl.dart';
+import 'package:restock/features/resource/orders/presentation/pages/orders_page.dart';
+import 'package:restock/features/resource/orders/presentation/pages/supplier_orders_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -62,6 +66,35 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  Future<void> _goToOrders(BuildContext context) async {
+    final authStorage = AuthStorage();
+    final supplierId = await authStorage.getUserId(); // o el método que uses
+  
+    if (!mounted) return;
+  
+    if (supplierId == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Could not get supplier id')),
+      );
+      return;
+    }
+  
+    final ordersRepository = OrdersRepositoryImpl(
+      service: OrdersService(),
+    );
+  
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => SupplierOrdersPage(
+          repository: ordersRepository,
+          supplierId: supplierId,
+        ),
+      ),
+    );
+  }
+  
+
   @override
   Widget build(BuildContext context) {
     const primaryGreen = Color.fromRGBO(92, 164, 104, 1);
@@ -97,7 +130,10 @@ class _HomePageState extends State<HomePage> {
             ListTile(
               leading: const Icon(Icons.shopping_cart),
               title: const Text("Orders"),
-              onTap: () => _goPlaceholder(context, "Orders"),
+              onTap: () {
+                Navigator.pop(context);
+                _goToOrders(context);
+              },
             ),
 
             ListTile(
@@ -257,8 +293,8 @@ class _HomePageState extends State<HomePage> {
                   child: QuickActionCard(
                     icon: Icons.shopping_cart,
                     title: "Orders",
-                    subtitle: "Make orders",
-                    onTap: () => _goPlaceholder(context, "Orders"),
+                    subtitle: "Manage orders",
+                    onTap: () => _goToOrders(context),
                   ),
                 ),
               ],
