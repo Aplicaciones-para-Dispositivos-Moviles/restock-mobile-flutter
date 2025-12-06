@@ -248,7 +248,7 @@ class _EditBusinessDataScreenState extends State<EditBusinessDataScreen> {
                         Text(
                           'Available categories',
                           style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                color:  Color.fromRGBO(92, 164, 104, 1),
                               ),
                         ),
                         const SizedBox(height: 8),

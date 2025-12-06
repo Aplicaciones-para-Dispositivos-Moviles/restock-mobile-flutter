@@ -21,6 +21,10 @@ class InitialConfigBloc extends Bloc<InitialConfigEvent, InitialConfigState> {
     on<NextToBusinessInfo>(_onNextToBusinessInfo);
     on<BusinessInfoChanged>(_onBusinessInfoChanged);
     on<BackToPersonalInfo>(_onBackToPersonalInfo);
+    on<NextToSubscription>(_onNextToSubscription);
+    on<BackToBusinessInfo>(_onBackToBusinessInfo);
+    on<SubscriptionCompleted>(_onSubscriptionCompleted);
+    on<SkipSubscription>(_onSkipSubscription);
     on<SubmitConfiguration>(_onSubmitConfiguration);
   }
 
@@ -66,8 +70,8 @@ class InitialConfigBloc extends Bloc<InitialConfigEvent, InitialConfigState> {
     emit(state.copyWith(currentStep: 0));
   }
 
-  Future<void> _onSubmitConfiguration(
-    SubmitConfiguration event,
+  void _onNextToSubscription(
+    NextToSubscription event,
     Emitter<InitialConfigState> emit,
   ) async {
     if (!state.isPersonalInfoValid || !state.isBusinessInfoValid) {
@@ -110,12 +114,47 @@ class InitialConfigBloc extends Bloc<InitialConfigEvent, InitialConfigState> {
         categoryIds: state.categoryIds,
       );
 
-      emit(state.copyWith(status: Status.success));
+      emit(state.copyWith(status: Status.initial, currentStep: 2));
     } catch (e) {
       emit(state.copyWith(
         status: Status.failure,
         errorMessage: e.toString(),
       ));
     }
+  }
+
+  void _onBackToBusinessInfo(
+    BackToBusinessInfo event,
+    Emitter<InitialConfigState> emit,
+  ) {
+    emit(state.copyWith(currentStep: 1));
+  }
+
+  void _onSubscriptionCompleted(
+    SubscriptionCompleted event,
+    Emitter<InitialConfigState> emit,
+  ) {
+    emit(state.copyWith(
+      subscriptionCompleted: true,
+      status: Status.success,
+    ));
+  }
+
+  void _onSkipSubscription(
+    SkipSubscription event,
+    Emitter<InitialConfigState> emit,
+  ) {
+    emit(state.copyWith(
+      subscriptionCompleted: false,
+      status: Status.success,
+    ));
+  }
+
+  Future<void> _onSubmitConfiguration(
+    SubmitConfiguration event,
+    Emitter<InitialConfigState> emit,
+  ) async {
+    // This method is deprecated, use NextToSubscription instead
+    add(const NextToSubscription());
   }
 }

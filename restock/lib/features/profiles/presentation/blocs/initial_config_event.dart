@@ -44,6 +44,22 @@ class BackToPersonalInfo extends InitialConfigEvent {
   const BackToPersonalInfo();
 }
 
+class NextToSubscription extends InitialConfigEvent {
+  const NextToSubscription();
+}
+
+class BackToBusinessInfo extends InitialConfigEvent {
+  const BackToBusinessInfo();
+}
+
+class SubscriptionCompleted extends InitialConfigEvent {
+  const SubscriptionCompleted();
+}
+
+class SkipSubscription extends InitialConfigEvent {
+  const SkipSubscription();
+}
+
 class SubmitConfiguration extends InitialConfigEvent {
   const SubmitConfiguration();
 }

@@ -28,7 +28,7 @@ class InfoCard extends StatelessWidget {
                 Icon(
                   headerIcon,
                   size: 24,
-                  color: Theme.of(context).colorScheme.primary,
+                  color:  Color.fromRGBO(92, 164, 104, 1),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
@@ -83,7 +83,7 @@ class _InfoItemWidget extends StatelessWidget {
           Icon(
             item.icon,
             size: 20,
-            color: Theme.of(context).colorScheme.onSurfaceVariant,
+            color:  Color.fromRGBO(92, 164, 104, 1)
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -93,7 +93,7 @@ class _InfoItemWidget extends StatelessWidget {
                 Text(
                   item.label,
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        color:  Color.fromRGBO(92, 164, 104, 1),
                       ),
                 ),
                 const SizedBox(height: 4),
