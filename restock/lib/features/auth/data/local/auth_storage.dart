@@ -29,6 +29,18 @@ class AuthStorage {
     print('DEBUG AuthStorage: Getting username: $_username');
     return _username;
   }
+    /// Devuelve toda la sesión de una vez
+  Future<AuthSession?> getSession() async {
+    if (_userId == null || _token == null) {
+      print('[AuthStorage] No session stored');
+      return null;
+    }
+    return AuthSession(
+      userId: _userId!,
+      token: _token!,
+      username: _username,
+    );
+  }
 
   Future<void> clear() async {
     print('DEBUG AuthStorage: Clearing session');
@@ -36,4 +48,17 @@ class AuthStorage {
     _token = null;
     _username = null;
   }
+}
+
+
+class AuthSession {
+  final int userId;
+  final String token;
+  final String? username;
+
+  AuthSession({
+    required this.userId,
+    required this.token,
+    required this.username,
+  });
 }

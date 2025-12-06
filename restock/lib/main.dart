@@ -1,6 +1,10 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:restock/features/alerts/data/remote/alert_service.dart';
+import 'package:restock/features/alerts/data/repositories/alert_repository_impl.dart';
+import 'package:restock/features/alerts/presentation/blocs/alert_bloc.dart';
+import 'package:restock/features/alerts/presentation/pages/alerts_page.dart';
 
 import 'package:restock/features/auth/data/local/auth_storage.dart';
 import 'package:restock/features/auth/data/remote/auth_service.dart';
@@ -28,6 +32,19 @@ void main() async {
   final authStorage = AuthStorage();
 
   final inventoryService = InventoryService();
+
+  final alertService = AlertService();
+  final alertRepository = AlertRepositoryImpl(
+    service: alertService,
+    getUserId: () async {
+      final id = await authStorage.getUserId();
+      if (id == null) {
+        throw Exception('No hay usuario logueado'); 
+      }
+      return id;
+    },
+  );
+  
   final inventoryRepository = InventoryRepositoryImpl(
     service: inventoryService,
     getUserId: () async {
@@ -65,6 +82,9 @@ void main() async {
             storage: authStorage,
           ),
         ),
+        BlocProvider(
+          create: (_) => AlertBloc(repository: alertRepository),
+        ),
       ],
       child: const RestockApp(),
     ),
@@ -86,6 +106,7 @@ class RestockApp extends StatelessWidget {
         '/inventory': (_) => const InventoryPage(),
         '/subscriptions': (_) => const SubscriptionPlansPage(),
         '/payment': (_) => const PaymentPage(),
+        '/alerts': (_) => const AlertsPage(),
       },
     );
   }

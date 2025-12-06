@@ -64,6 +64,9 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
         username: user.username,
       );
 
+      // Hacer login automático después del registro
+      //final user = await service.login(state.username, state.password);
+
       // Guardar sesión
       await storage.saveSession(
         userId: user.id,
