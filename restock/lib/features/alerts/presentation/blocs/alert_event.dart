@@ -8,7 +8,6 @@ class AlertsLoadRequested extends AlertEvent {
   const AlertsLoadRequested();
 }
 
-/// Evento para limpiar el estado
 class AlertsClearRequested extends AlertEvent {
   const AlertsClearRequested();
 }
