@@ -90,26 +90,41 @@ class _EditOrderPageState extends State<EditOrderPage> {
   }
 
   void _onSave() {
-    // TODO: Cuando el backend soporte description/fecha/hora,
-    // agregar llamada para actualizar esos campos
-    
-    // Por ahora, solo actualizamos el estado
-    context.read<OrdersBloc>().add(
-          OrderStateUpdateRequested(
-            orderId: widget.order.id,
-            newState: _selectedState,
-            newSituation: widget.order.situation,
-          ),
-        );
-    
-    // Mostrar mensaje de éxito
+    final bloc = context.read<OrdersBloc>();
+  
+    // 1) Actualizar description + fechas (sin tocar state)
+    final updatedOrder = widget.order.copyWith(
+      description: _descriptionController.text.trim().isEmpty
+          ? null
+          : _descriptionController.text.trim(),
+      estimatedShipDate: _shipDate != null
+          ? _shipDate!.toIso8601String().split('T').first
+          : null,
+      estimatedShipTime: _shipTime != null
+          ? '${_shipTime!.hour.toString().padLeft(2, '0')}:${_shipTime!.minute.toString().padLeft(2, '0')}:00'
+          : null,
+    );
+  
+    bloc.add(OrderUpdateRequested(updatedOrder));
+  
+    // 2) Si cambió el state, llamar también al endpoint /state
+    if (_selectedState != widget.order.state) {
+      bloc.add(
+        OrderStateUpdateRequested(
+          orderId: widget.order.id,
+          newState: _selectedState,
+          newSituation: widget.order.situation,
+        ),
+      );
+    }
+  
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         content: Text('Order updated successfully'),
         backgroundColor: Colors.green,
       ),
     );
-    
+  
     Navigator.of(context).pop();
   }
 

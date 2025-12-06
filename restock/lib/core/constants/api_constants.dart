@@ -86,7 +86,8 @@ class ApiConstants {
 
   static String orderUpdateState(int id) => '$ordersEndpoint/$id/state';
  
-  
+  static String orderUpdate(int id) => '$ordersEndpoint/$id';
+ 
   // -------------------------
   // RECIPES
   // -------------------------

@@ -164,32 +164,17 @@ class OrdersService {
   Future<OrderDto?> updateOrderDetails(Order order) async {
     final url = _uri(ApiConstants.orderById(order.id));
 
-  String? _normalizeDate(String? date) {
-    if (date == null || date.isEmpty) return null;
-
-    // Ejemplo: si viene 'dd/MM/yyyy'
-    final parsed = DateFormat('dd/MM/yyyy').parse(date);
-    return DateFormat('yyyy-MM-dd').format(parsed); // para LocalDate
-  }
-
-  // Normalizamos la hora: si viene 'HH:mm', le agregamos ':00'
-  String? _normalizeTime(String? time) {
-    if (time == null || time.isEmpty) return null;
-    if (time.length == 5) {
-      // 'HH:mm' -> 'HH:mm:00'
-      return '$time:00';
-    }
-    return time; // ya vendrá en 'HH:mm:ss' u otro formato
-  }
-
-  final timeStr = _normalizeTime(order.estimatedShipTime);
-  final dateStr = _normalizeDate(order.estimatedShipDate);
-  
-    // OJO: ajusta formato de fecha/hora según espera tu backend.
+    // Usamos directamente lo que viene del dominio
     final body = {
-      'description': order.description,
-      'estimatedShipDate': dateStr,  // p.ej. '2025-12-06'
-      'estimatedShipTime': timeStr,  // p.ej. '08:00:00',
+      'description': (order.description?.isEmpty ?? true)
+          ? null
+          : order.description,
+      'estimatedShipDate': (order.estimatedShipDate?.isEmpty ?? true)
+          ? null
+          : order.estimatedShipDate,           // ya viene 'yyyy-MM-dd'
+      'estimatedShipTime': (order.estimatedShipTime?.isEmpty ?? true)
+          ? null
+          : order.estimatedShipTime,           // ya viene 'HH:mm:00'
       'batchItems': order.batchItems.map((item) {
         return {
           'batchId': item.batchId,
@@ -198,11 +183,17 @@ class OrdersService {
       }).toList(),
     };
 
+    print('PUT: $url');
+    print('BODY: $body');
+
     final response = await client.put(
       url,
       headers: await _headers(),
       body: jsonEncode(body),
     );
+
+    print('Status: ${response.statusCode}');
+    print('Response: ${response.body}');
 
     if (response.statusCode == 200) {
       return OrderDto.fromJson(jsonDecode(response.body));
