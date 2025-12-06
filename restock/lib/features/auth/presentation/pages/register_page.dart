@@ -43,16 +43,6 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
               ),
             );
-
-            // Verificar suscripción: 0 = sin suscripción, 1 = anual, 2 = semestral
-            /*if (state.userSubscription == 0) {
-              // Sin suscripción, ir a página de planes
-              Navigator.pushReplacementNamed(context, '/subscriptions');
-            } else {
-              // Con suscripción, ir a home
-              Navigator.pushReplacementNamed(context, '/home');
-            }*/
-
           } else if (state.status == Status.failure) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text(state.message ?? 'Error desconocido')),

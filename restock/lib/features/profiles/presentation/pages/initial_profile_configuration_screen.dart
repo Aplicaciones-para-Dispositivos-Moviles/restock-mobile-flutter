@@ -5,6 +5,7 @@ import 'package:restock/features/profiles/presentation/blocs/initial_config_bloc
 import 'package:restock/features/profiles/presentation/blocs/initial_config_state.dart';
 import 'package:restock/features/profiles/presentation/widgets/business_info_step.dart';
 import 'package:restock/features/profiles/presentation/widgets/personal_info_step.dart';
+import 'package:restock/features/profiles/presentation/widgets/subscription_step.dart';
 
 class InitialProfileConfigurationScreen extends StatelessWidget {
   const InitialProfileConfigurationScreen({super.key});
@@ -59,7 +60,7 @@ class InitialProfileConfigurationScreen extends StatelessWidget {
                             isActive: state.currentStep == 0,
                             isCompleted: state.currentStep > 0,
                           ),
-                          // Connector
+                          // Connector 1-2
                           Expanded(
                             child: Container(
                               height: 2,
@@ -74,13 +75,30 @@ class InitialProfileConfigurationScreen extends StatelessWidget {
                             number: 2,
                             label: 'Business',
                             isActive: state.currentStep == 1,
+                            isCompleted: state.currentStep > 1,
+                          ),
+                          // Connector 2-3
+                          Expanded(
+                            child: Container(
+                              height: 2,
+                              color: state.currentStep > 1
+                                  ? const Color(0xFF1B5E20)
+                                  : Colors.grey.shade300,
+                              margin: const EdgeInsets.symmetric(horizontal: 8),
+                            ),
+                          ),
+                          // Step 3
+                          _StepIndicator(
+                            number: 3,
+                            label: 'Subscription',
+                            isActive: state.currentStep == 2,
                             isCompleted: false,
                           ),
                         ],
                       ),
                       const SizedBox(height: 16),
                       LinearProgressIndicator(
-                        value: (state.currentStep + 1) / 2,
+                        value: (state.currentStep + 1) / 3,
                         backgroundColor: Colors.grey.shade200,
                         valueColor: const AlwaysStoppedAnimation<Color>(
                           Color(0xFF1B5E20),
@@ -118,6 +136,7 @@ class InitialProfileConfigurationScreen extends StatelessWidget {
                           children: const [
                             PersonalInfoStep(),
                             BusinessInfoStep(),
+                            SubscriptionStep(),
                           ],
                         ),
                 ),
