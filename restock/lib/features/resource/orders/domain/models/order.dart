@@ -17,6 +17,11 @@ class Order {
   final OrderSituation situation;
   final List<OrderBatchItem> batchItems;
 
+  // NUEVO (para que UI tenga todo lo del Figma)
+  final String? description;          // texto libre para el proveedor
+  final String? estimatedShipDate;    // '2025-03-13'
+  final String? estimatedShipTime;    // '20:00' o '8:00 PM'
+
   const Order({
     required this.id,
     required this.adminRestaurantId,
@@ -29,6 +34,9 @@ class Order {
     this.state = OrderState.onHold,
     this.situation = OrderSituation.pending,
     this.batchItems = const [],
+    this.description = '',
+    this.estimatedShipDate = '',
+    this.estimatedShipTime = '',
   });
 
   Order copyWith({
@@ -43,6 +51,9 @@ class Order {
     OrderState? state,
     OrderSituation? situation,
     List<OrderBatchItem>? batchItems,
+    String? description,
+    String? estimatedShipDate,
+    String? estimatedShipTime,
   }) {
     return Order(
       id: id ?? this.id,
@@ -57,6 +68,9 @@ class Order {
       state: state ?? this.state,
       situation: situation ?? this.situation,
       batchItems: batchItems ?? this.batchItems,
+      description: description ?? this.description,
+      estimatedShipDate: estimatedShipDate ?? this.estimatedShipDate,
+      estimatedShipTime: estimatedShipTime ?? this.estimatedShipTime,
     );
   }
 }
