@@ -86,7 +86,7 @@ class AlertDetailPage extends StatelessWidget {
       appBar: AppBar(
         title: Text('Alert #${alert.id}'),
         backgroundColor: Colors.white,
-        foregroundColor: color, // El color de la barra se relaciona con el estado
+        foregroundColor: color, 
         elevation: 1,
       ),
       body: SingleChildScrollView(
@@ -111,7 +111,6 @@ class AlertDetailPage extends StatelessWidget {
             ),
             const SizedBox(height: 20),
 
-            // Mensaje principal de la Alerta
             const Text(
               'Alert Message:',
               style: TextStyle(
