@@ -24,18 +24,19 @@ class BatchDto {
   });
 
   factory BatchDto.fromJson(Map<String, dynamic> json) {
-    return BatchDto(
-      id: json['id'],
-      userId: json['userId'],
-      userRoleId: json['userRoleId'],
-      customSupplyId: json['customSupplyId'],
-      stock: (json['stock'] as num?)?.toDouble(),
-      expirationDate: json['expirationDate'],
-      customSupply: json['customSupply'] != null
-          ? CustomSupplyDto.fromJson(json['customSupply'])
-          : null,
-    );
-  }
+  return BatchDto(
+    id: json['id']?.toString(),        // A veces viene como int
+    userId: json['userId'],
+    userRoleId: json['userRoleId'],
+    customSupplyId: json['customSupplyId'],
+    stock: (json['stock'] as num?)?.toDouble(),
+    expirationDate: json['expirationDate'],
+    customSupply: json['customSupply'] != null
+        ? CustomSupplyDto.fromJson(json['customSupply'])
+        : null,
+  );
+}
+
 
   Batch toDomain({List<CustomSupply>? customSupplies}) {
     return Batch(
