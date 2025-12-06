@@ -1,17 +1,14 @@
- 
 import 'package:flutter/material.dart';
 import 'package:restock/features/resource/inventory/domain/models/custom_supply.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:restock/features/resource/inventory/presentation/blocs/inventory_bloc.dart';
 import 'package:restock/features/resource/inventory/presentation/blocs/inventory_event.dart';
+import 'package:restock/features/resource/inventory/presentation/pages/supply_form_page.dart';
 
 class SupplyDetailPage extends StatelessWidget {
   final CustomSupply? customSupply;
 
-  const SupplyDetailPage({
-    super.key,
-    required this.customSupply,
-  });
+  const SupplyDetailPage({super.key, required this.customSupply});
 
   @override
   Widget build(BuildContext context) {
@@ -32,6 +29,37 @@ class SupplyDetailPage extends StatelessWidget {
           icon: const Icon(Icons.arrow_back),
           onPressed: () => Navigator.pop(context),
         ),
+        actions: [
+          PopupMenuButton<String>(
+            onSelected: (value) {
+              if (value == 'edit') {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        SupplyFormPage(existingSupply: customSupply),
+                  ),
+                );
+              } else if (value == 'delete') {
+                context.read<InventoryBloc>().add(
+                      DeleteCustomSupplyEvent(customSupply!.id),
+                    );
+                Navigator.pop(context);
+              }
+            },
+            itemBuilder: (context) => [
+              const PopupMenuItem(
+                value: 'edit',
+                child: Text('Edit'),
+              ),
+              const PopupMenuItem(
+                value: 'delete',
+                child: Text('Delete'),
+              ),
+            ],
+            icon: const Icon(Icons.more_vert), // los tres puntitos
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
@@ -42,60 +70,37 @@ class SupplyDetailPage extends StatelessWidget {
               supply?.name ?? 'Unnamed Supply',
               style: const TextStyle(
                 fontWeight: FontWeight.bold,
-                fontSize: 22,
+                fontSize: 24,
               ),
             ),
             const SizedBox(height: 16),
             Card(
-              color:  Color.fromRGBO(92, 164, 104, 1),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              elevation: 4,
+              color: Colors.white,
               child: Padding(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.symmetric(vertical: 8),
                 child: Column(
                   children: [
-                    _InfoItem('Description', customSupply!.description),
-                    _InfoItem('Min Stock', '${customSupply!.minStock}'),
-                    _InfoItem('Max Stock', '${customSupply!.maxStock}'),
-                    _InfoItem('Unit', customSupply!.unit.name),
-                    _InfoItem(
-                        'Unit Abbreviation', customSupply!.unit.abbreviation),
+                    _InfoTile(
+                        label: 'Description', value: customSupply!.description),
+                    const Divider(height: 1),
+                    _InfoTile(
+                        label: 'Min Stock', value: '${customSupply!.minStock}'),
+                    const Divider(height: 1),
+                    _InfoTile(
+                        label: 'Max Stock', value: '${customSupply!.maxStock}'),
+                    const Divider(height: 1),
+                    _InfoTile(label: 'Unit', value: customSupply!.unit.name),
+                    const Divider(height: 1),
+                    _InfoTile(
+                        label: 'Abbreviation',
+                        value: customSupply!.unit.abbreviation),
                   ],
                 ),
               ),
-            ),
-            const Spacer(),
-            Row(
-              children: [
-                Expanded(
-                  child: ElevatedButton.icon(
-                    onPressed: () {
-                      // aquí luego puedes navegar a SupplyFormPage para editar
-                      // por ahora solo placeholder
-                    },
-                    icon: const Icon(Icons.edit),
-                    label: const Text('Edit'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: greenColor,
-                      foregroundColor: Colors.white,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: OutlinedButton.icon(
-                    onPressed: () {
-                      context.read<InventoryBloc>().add(
-                            DeleteCustomSupplyEvent(customSupply!.id),
-                          );
-                      Navigator.pop(context);
-                    },
-                    icon: const Icon(Icons.delete),
-                    label: const Text('Delete'),
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: Theme.of(context).colorScheme.error,
-                    ),
-                  ),
-                ),
-              ],
             ),
           ],
         ),
@@ -104,34 +109,32 @@ class SupplyDetailPage extends StatelessWidget {
   }
 }
 
-class _InfoItem extends StatelessWidget {
+class _InfoTile extends StatelessWidget {
   final String label;
   final String value;
 
-  const _InfoItem(this.label, this.value);
+  const _InfoTile({required this.label, required this.value});
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: 12,
-              color: Theme.of(context).colorScheme.primary,
-            ),
-          ),
-          Text(
-            value,
-            style: const TextStyle(
-              fontWeight: FontWeight.w600,
-              fontSize: 14,
-            ),
-          ),
-        ],
+    return ListTile(
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+      dense: true,
+      title: Text(
+        label,
+        style: TextStyle(
+          fontSize: 13,
+          color: Theme.of(context).colorScheme.primary,
+          fontWeight: FontWeight.w500,
+        ),
+      ),
+      subtitle: Text(
+        value,
+        style: const TextStyle(
+          fontWeight: FontWeight.w600,
+          fontSize: 16,
+          color: Colors.black87,
+        ),
       ),
     );
   }

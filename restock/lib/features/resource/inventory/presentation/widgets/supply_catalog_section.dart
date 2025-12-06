@@ -26,10 +26,7 @@ class SupplyCatalogSection extends StatelessWidget {
             const Expanded(
               child: Text(
                 'Supply Catalog',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18,
-                ),
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
               ),
             ),
             ElevatedButton.icon(
@@ -45,7 +42,7 @@ class SupplyCatalogSection extends StatelessWidget {
         ),
         const SizedBox(height: 8),
         SizedBox(
-          height: 170,
+          height: 190,
           child: ListView.separated(
             scrollDirection: Axis.horizontal,
             itemCount: supplies.length,
@@ -68,10 +65,7 @@ class _SupplyCard extends StatelessWidget {
   final CustomSupply custom;
   final void Function(CustomSupply) onViewSupplyDetails;
 
-  const _SupplyCard({
-    required this.custom,
-    required this.onViewSupplyDetails,
-  });
+  const _SupplyCard({required this.custom, required this.onViewSupplyDetails});
 
   @override
   Widget build(BuildContext context) {
@@ -82,18 +76,15 @@ class _SupplyCard extends StatelessWidget {
         width: 220,
         padding: const EdgeInsets.all(12),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               custom.supply?.name ?? 'Unnamed',
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 16,
-              ),
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
+            const SizedBox(height: 6),
             Wrap(
               spacing: 6,
               children: [
@@ -107,18 +98,18 @@ class _SupplyCard extends StatelessWidget {
                 ),
               ],
             ),
+            const SizedBox(height: 6),
             Text(
               'Stock: ${custom.minStock} ~ ${custom.maxStock}',
               style: const TextStyle(color: Colors.grey),
             ),
+            const Spacer(),
             Align(
               alignment: Alignment.bottomRight,
               child: IconButton.filled(
-                style: IconButton.styleFrom(
-                  backgroundColor: greenColor,
-                ),
+                style: IconButton.styleFrom(backgroundColor: greenColor),
                 onPressed: () => onViewSupplyDetails(custom),
-                icon: const Icon(Icons.search, color: Colors.white),
+                icon: const Icon(Icons.remove_red_eye, color: Colors.white),
               ),
             ),
           ],

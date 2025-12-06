@@ -10,10 +10,7 @@ import 'batch_form_page.dart';
 class InventoryDetailPage extends StatelessWidget {
   final String batchId;
 
-  const InventoryDetailPage({
-    super.key,
-    required this.batchId,
-  });
+  const InventoryDetailPage({super.key, required this.batchId});
 
   @override
   Widget build(BuildContext context) {
@@ -31,50 +28,61 @@ class InventoryDetailPage extends StatelessWidget {
               icon: const Icon(Icons.arrow_back),
               onPressed: () => Navigator.pop(context),
             ),
+            actions: batch == null
+                ? null
+                : [
+                    PopupMenuButton<String>(
+                      onSelected: (value) async {
+                        if (value == 'edit') {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) =>
+                                  BatchFormPage(existingBatch: batch),
+                            ),
+                          );
+                        } else if (value == 'delete') {
+                          final confirm = await showDialog<bool>(
+                            context: context,
+                            builder: (ctx) => AlertDialog(
+                              title: const Text('Delete batch'),
+                              content: const Text(
+                                'Are you sure you want to delete this batch?',
+                              ),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Navigator.pop(ctx, false),
+                                  child: const Text('Cancel'),
+                                ),
+                                TextButton(
+                                  onPressed: () => Navigator.pop(ctx, true),
+                                  child: const Text(
+                                    'Delete',
+                                    style: TextStyle(color: Colors.red),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                          if (confirm == true) {
+                            context.read<InventoryBloc>().add(
+                                  DeleteBatchEvent(batch.id),
+                                );
+                            Navigator.pop(context);
+                          }
+                        }
+                      },
+                      itemBuilder: (context) => const [
+                        PopupMenuItem(value: 'edit', child: Text('Edit')),
+                        PopupMenuItem(value: 'delete', child: Text('Delete')),
+                      ],
+                      icon: const Icon(Icons.more_vert),
+                    ),
+                  ],
           ),
           body: batch == null
               ? const Center(child: Text('Batch not found'))
-              : _BatchDetailContent(
-                  batch: batch,
-                  onEdit: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => BatchFormPage(existingBatch: batch),
-                      ),
-                    );
-                  },
-                  onDelete: () async {
-                    final confirm = await showDialog<bool>(
-                      context: context,
-                      builder: (ctx) => AlertDialog(
-                        title: const Text('Delete batch'),
-                        content: const Text(
-                            'Are you sure you want to delete this batch?'),
-                        actions: [
-                          TextButton(
-                            onPressed: () => Navigator.pop(ctx, false),
-                            child: const Text('Cancel'),
-                          ),
-                          TextButton(
-                            onPressed: () => Navigator.pop(ctx, true),
-                            child: const Text(
-                              'Delete',
-                              style: TextStyle(color: Colors.red),
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
-                    if (confirm == true) {
-                      context
-                          .read<InventoryBloc>()
-                          .add(DeleteBatchEvent(batch.id));
-                      Navigator.pop(context);
-                    }
-                  },
-                  accentColor: greenColor,
-                ),
+              : _BatchDetailContent(batch: batch, accentColor: greenColor),
         );
       },
     );
@@ -83,27 +91,22 @@ class InventoryDetailPage extends StatelessWidget {
 
 class _BatchDetailContent extends StatelessWidget {
   final Batch batch;
-  final VoidCallback onEdit;
-  final VoidCallback onDelete;
   final Color accentColor;
 
-  const _BatchDetailContent({
-    required this.batch,
-    required this.onEdit,
-    required this.onDelete,
-    required this.accentColor,
-  });
+  const _BatchDetailContent({required this.batch, required this.accentColor});
 
   @override
   Widget build(BuildContext context) {
     final customSupply = batch.customSupply;
     final supply = customSupply?.supply;
     final unit = customSupply?.unit;
+    final isPerishable = supply?.perishable ?? false;
 
     return Padding(
       padding: const EdgeInsets.all(16),
       child: ListView(
         children: [
+          // Supply Information
           Card(
             child: Padding(
               padding: const EdgeInsets.all(16),
@@ -112,24 +115,21 @@ class _BatchDetailContent extends StatelessWidget {
                 children: [
                   const Text(
                     'Supply Information',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                    ),
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                   ),
                   const Divider(),
                   _DetailRow('Name', supply?.name ?? '-'),
                   _DetailRow('Description', supply?.description ?? '-'),
                   _DetailRow('Category', supply?.category ?? '-'),
-                  _DetailRow(
-                    'Perishable',
-                    (supply?.perishable ?? false) ? 'Yes' : 'No',
-                  ),
+                  _DetailRow('Perishable', isPerishable ? 'Yes' : 'No'),
                 ],
               ),
             ),
           ),
+
           const SizedBox(height: 16),
+
+          // Custom Supply Details
           Card(
             child: Padding(
               padding: const EdgeInsets.all(16),
@@ -138,18 +138,12 @@ class _BatchDetailContent extends StatelessWidget {
                 children: [
                   const Text(
                     'Custom Supply Details',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                    ),
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                   ),
                   const Divider(),
-                  _DetailRow(
-                      'Min stock', customSupply?.minStock.toString() ?? '-'),
-                  _DetailRow(
-                      'Max stock', customSupply?.maxStock.toString() ?? '-'),
-                  _DetailRow(
-                      'Price', customSupply?.price.toString() ?? '-'),
+                  _DetailRow('Min stock', customSupply?.minStock.toString() ?? '-'),
+                  _DetailRow('Max stock', customSupply?.maxStock.toString() ?? '-'),
+                  _DetailRow('Price', customSupply?.price.toString() ?? '-'),
                   _DetailRow(
                     'Unit',
                     '${unit?.name ?? '-'} (${unit?.abbreviation ?? ''})',
@@ -158,7 +152,10 @@ class _BatchDetailContent extends StatelessWidget {
               ),
             ),
           ),
+
           const SizedBox(height: 16),
+
+          // Batch Data
           Card(
             child: Padding(
               padding: const EdgeInsets.all(16),
@@ -167,43 +164,16 @@ class _BatchDetailContent extends StatelessWidget {
                 children: [
                   const Text(
                     'Batch Data',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                    ),
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                   ),
                   const Divider(),
                   _DetailRow('Current stock', batch.stock.toString()),
-                  _DetailRow('Expiration date', batch.expirationDate ?? '-'),
-                  _DetailRow('User ID', (batch.userId ?? 0).toString()),
+                  if (isPerishable)
+                    _DetailRow('Expiration date', batch.expirationDate ?? '-'),
                   _DetailRow('Batch ID', batch.id),
                 ],
               ),
             ),
-          ),
-          const SizedBox(height: 24),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              OutlinedButton.icon(
-                onPressed: onDelete,
-                icon: const Icon(Icons.delete, color: Colors.red),
-                label: const Text(
-                  'Delete',
-                  style: TextStyle(color: Colors.red),
-                ),
-              ),
-              const SizedBox(width: 12),
-              ElevatedButton.icon(
-                onPressed: onEdit,
-                icon: const Icon(Icons.edit),
-                label: const Text('Edit'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: accentColor,
-                  foregroundColor: Colors.white,
-                ),
-              ),
-            ],
           ),
         ],
       ),
@@ -224,17 +194,9 @@ class _DetailRow extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            label,
-            style: const TextStyle(fontWeight: FontWeight.w600),
-          ),
+          Text(label, style: const TextStyle(fontWeight: FontWeight.w600)),
           const SizedBox(width: 8),
-          Expanded(
-            child: Text(
-              value,
-              textAlign: TextAlign.end,
-            ),
-          ),
+          Expanded(child: Text(value, textAlign: TextAlign.end)),
         ],
       ),
     );
