@@ -19,7 +19,7 @@ class OrderBatchItemDto {
     return OrderBatchItemDto(
       batchId: json['batchId'],
       quantity: (json['quantity'] as num?)?.toDouble(),
-      accepted: json['accepted'],
+      accepted: json['accept'],
       batch: json['batch'] != null ? BatchDto.fromJson(json['batch']) : null,
     );
   }
