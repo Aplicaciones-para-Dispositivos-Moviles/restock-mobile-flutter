@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:restock/features/alerts/domain/models/alert.dart';
 import 'package:restock/features/alerts/presentation/blocs/alert_bloc.dart';
 import 'package:restock/features/alerts/presentation/blocs/alert_event.dart';
 import 'package:restock/features/alerts/presentation/blocs/alert_state.dart';
@@ -87,9 +88,9 @@ class _AlertsPageState extends State<AlertsPage> {
             );
           }
 
-          final allAlerts = [...state.supplierAlerts, ...state.adminAlerts];
+          final List<Alert> displayedAlerts = state.supplierAlerts;
 
-          if (allAlerts.isEmpty) {
+          if (displayedAlerts.isEmpty) {
             return const Center(
               child: Text(
                 'No alerts found. Everything looks clear!',
@@ -100,9 +101,9 @@ class _AlertsPageState extends State<AlertsPage> {
 
           return ListView.builder(
             padding: const EdgeInsets.all(12.0),
-            itemCount: allAlerts.length,
+            itemCount: displayedAlerts.length,
             itemBuilder: (context, index) {
-              final alert = allAlerts[index];
+              final alert = displayedAlerts[index];
 
               return GestureDetector(
                 onTap: () {
