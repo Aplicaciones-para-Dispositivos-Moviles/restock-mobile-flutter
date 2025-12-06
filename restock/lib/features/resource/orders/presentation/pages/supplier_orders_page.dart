@@ -5,6 +5,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:restock/core/enums/status.dart';
 import 'package:restock/features/auth/data/local/auth_storage.dart';
 import 'package:restock/features/profiles/data/remote/profile_service.dart';
+import 'package:restock/features/resource/inventory/data/remote/inventory_service.dart';
+import 'package:restock/features/resource/inventory/data/repositories/inventory_repository_impl.dart';
+import 'package:restock/features/resource/orders/data/remote/orders_service.dart';
+import 'package:restock/features/resource/orders/data/repositories/orders_repository_impl.dart';
 import 'package:restock/features/resource/orders/domain/repositories/orders_repository.dart';
 import 'package:restock/features/resource/orders/presentation/blocs/orders_bloc.dart';
 import 'package:restock/features/resource/orders/presentation/blocs/orders_event.dart';
@@ -19,6 +23,8 @@ class SupplierOrdersPage extends StatelessWidget {
   final OrdersRepository repository;
   final int supplierId;
 
+
+  
   const SupplierOrdersPage({
     Key? key,
     required this.repository,
@@ -27,11 +33,19 @@ class SupplierOrdersPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    
+    final ordersRepository = OrdersRepositoryImpl(service: OrdersService());
+    final inventoryRepository = InventoryRepositoryImpl(
+      service: InventoryService(),
+      getUserId: () async => await AuthStorage().getUserId(),
+    );
+    
     return BlocProvider(
       create: (_) => OrdersBloc(
-        repository: repository,
+        repository: ordersRepository,
         profileService: ProfileService(),
         authStorage: AuthStorage(),
+        inventoryRepository: inventoryRepository
       )..add(OrdersStarted(supplierId)),
       child: Scaffold(
         appBar: AppBar(

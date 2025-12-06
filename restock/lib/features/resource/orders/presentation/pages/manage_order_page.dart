@@ -78,16 +78,34 @@ class _ManageOrderPageState extends State<ManageOrderPage> {
   }
 
   void _onApprove() {
-    // Estado por defecto: ON_HOLD
-    context.read<OrdersBloc>().add(
-          OrderStateUpdateRequested(
-            orderId: widget.order.id,
-            newState: OrderState.onHold,
-            newSituation: OrderSituation.approved,
-          ),
-        );
-    // TODO: Cuando el backend soporte description/fecha/hora,
-    // agregar otra llamada para actualizar esos campos
+    final bloc = context.read<OrdersBloc>();
+
+    // 1) construir la orden actualizada
+    final updatedOrder = widget.order.copyWith(
+      description: _descriptionController.text.trim().isEmpty
+          ? null
+          : _descriptionController.text.trim(),
+      estimatedShipDate: _shipDate != null
+          ? _shipDate!.toIso8601String().split('T').first
+          : widget.order.estimatedShipDate,
+      estimatedShipTime: _shipTime != null
+          ? '${_shipTime!.hour.toString().padLeft(2, '0')}:${_shipTime!.minute.toString().padLeft(2, '0')}'
+          : widget.order.estimatedShipTime,
+      batchItems: _items, // aquí ya vienen con accepted = true/false
+    );
+
+    // 2) primero actualizamos detalles + accepted
+    bloc.add(OrderUpdateRequested(updatedOrder));
+
+    // 3) luego actualizamos state/situation
+    bloc.add(
+      OrderStateUpdateRequested(
+        orderId: widget.order.id,
+        newState: OrderState.onHold,
+        newSituation: OrderSituation.approved,
+      ),
+    );
+
     Navigator.of(context).pop();
   }
 
