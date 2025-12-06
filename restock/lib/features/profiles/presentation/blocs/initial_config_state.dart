@@ -19,6 +19,9 @@ class InitialConfigState {
   final String description;
   final List<String> categoryIds;
 
+  // Subscription Info
+  final bool subscriptionCompleted;
+
   const InitialConfigState({
     this.currentStep = 0,
     this.status = Status.initial,
@@ -33,6 +36,7 @@ class InitialConfigState {
     this.businessAddress = '',
     this.description = '',
     this.categoryIds = const [],
+    this.subscriptionCompleted = false,
   });
 
   InitialConfigState copyWith({
@@ -49,6 +53,7 @@ class InitialConfigState {
     String? businessAddress,
     String? description,
     List<String>? categoryIds,
+    bool? subscriptionCompleted,
   }) {
     return InitialConfigState(
       currentStep: currentStep ?? this.currentStep,
@@ -64,6 +69,7 @@ class InitialConfigState {
       businessAddress: businessAddress ?? this.businessAddress,
       description: description ?? this.description,
       categoryIds: categoryIds ?? this.categoryIds,
+      subscriptionCompleted: subscriptionCompleted ?? this.subscriptionCompleted,
     );
   }
 

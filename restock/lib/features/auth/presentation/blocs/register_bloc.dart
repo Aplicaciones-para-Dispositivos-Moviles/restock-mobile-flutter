@@ -16,15 +16,24 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
   }) : super(const RegisterState()) {
 
     on<OnUsernameChanged>((event, emit) {
-      emit(state.copyWith(username: event.username));
+      emit(state.copyWith(
+        username: event.username,
+        status: Status.initial,
+      ));
     });
 
     on<OnPasswordChangedRegister>((event, emit) {
-      emit(state.copyWith(password: event.password));
+      emit(state.copyWith(
+        password: event.password,
+        status: Status.initial,
+      ));
     });
 
     on<OnRoleChanged>((event, emit) {
-      emit(state.copyWith(roleId: event.roleId));
+      emit(state.copyWith(
+        roleId: event.roleId,
+        status: Status.initial,
+      ));
     });
 
     on<RegisterSubmitted>(_onRegisterSubmitted);
