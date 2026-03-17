@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:restock/core/enums/status.dart';
+import 'package:restock/features/auth/data/local/auth_storage.dart';
 import 'package:restock/features/auth/presentation/blocs/register_bloc.dart';
 import 'package:restock/features/auth/presentation/blocs/register_event.dart';
 import 'package:restock/features/auth/presentation/blocs/register_state.dart';
-import 'package:restock/features/home/presentation/pages/home_page.dart';
+import 'package:restock/features/profiles/data/remote/business_update_service.dart';
+import 'package:restock/features/profiles/data/remote/profile_update_service.dart';
+import 'package:restock/features/profiles/presentation/blocs/initial_config_bloc.dart';
+import 'package:restock/features/profiles/presentation/pages/initial_profile_configuration_screen.dart';
+
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -24,9 +29,19 @@ class _RegisterPageState extends State<RegisterPage> {
       body: BlocListener<RegisterBloc, RegisterState>(
         listener: (context, state) {
           if (state.status == Status.success) {
+            // Navigate to initial profile configuration
             Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (context) => const HomePage()),
+              MaterialPageRoute(
+                builder: (context) => BlocProvider(
+                  create: (context) => InitialConfigBloc(
+                    profileService: ProfileUpdateService(),
+                    businessService: BusinessUpdateService(),
+                    storage: AuthStorage(),
+                  ),
+                  child: const InitialProfileConfigurationScreen(),
+                ),
+              ),
             );
           } else if (state.status == Status.failure) {
             ScaffoldMessenger.of(context).showSnackBar(

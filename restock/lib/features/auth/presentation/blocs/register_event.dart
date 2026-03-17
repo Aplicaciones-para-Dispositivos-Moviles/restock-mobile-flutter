@@ -12,6 +12,11 @@ class OnPasswordChangedRegister extends RegisterEvent {
   const OnPasswordChangedRegister({required this.password});
 }
 
+class OnRoleChanged extends RegisterEvent {
+  final int roleId;
+  const OnRoleChanged({required this.roleId});
+}
+
 class RegisterSubmitted extends RegisterEvent {
   const RegisterSubmitted();
 }
